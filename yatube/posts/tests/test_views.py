@@ -146,7 +146,6 @@ class PostsViewsTests(TestCase):
         self.assertEqual(response.context['page_obj'].author, self.post.author)
         self.assertEqual(response.context['page_obj'].group, self.post.group)
 
-
     def test_post_detail_pic(self):
         response = self.guest_client.get(
             reverse('posts:post_detail', kwargs={"post_id": self.post.id})
