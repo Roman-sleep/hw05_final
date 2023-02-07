@@ -22,7 +22,6 @@
     <p>{{ post.text }}</p>
     {% if not forloop.last %}<hr>{% endif %}
     {% empty %}
-    <p> Если цикл пустой </p>
     {% endfor %}
     {% include 'posts/includes/paginator.html' %}
 </div>

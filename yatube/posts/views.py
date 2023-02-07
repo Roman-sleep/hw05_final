@@ -6,13 +6,16 @@ from django.core.paginator import Paginator
 from yatube.settings import POSTS_PER_PAGE
 
 
+def paginator(page_number, posts):
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+    page_obj = paginator.get_page(page_number)
+    return page_obj
+
+
 def index(request):
     posts = Post.objects.all()
-    paginator = Paginator(posts, POSTS_PER_PAGE)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
-        'page_obj': page_obj,
+        'page_obj': paginator(request.GET.get('page'), posts),
     }
     return render(request, 'posts/index.html', context)
 
@@ -20,28 +23,22 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     posts = Post.objects.filter(group=group)
-    paginator = Paginator(posts, POSTS_PER_PAGE)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'group': group,
         'posts': posts,
-        'page_obj': page_obj,
+        'page_obj': paginator(request.GET.get('page'), posts),
     }
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=author)
-    paginator = Paginator(posts, POSTS_PER_PAGE)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    posts = author.posts.all()
     template = 'posts/profile.html'
     context = {
         'author': author,
         'posts': posts,
-        'page_obj': page_obj,
+        'page_obj': paginator(request.GET.get('page'), posts),
     }
     return render(request, template, context)
 
@@ -108,15 +105,13 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    authors = Follow.objects.filter(
-        user=request.user).values_list('author_id', flat=True)
-    posts = Post.objects.filter(author_id__in=authors)
+    posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
-        'title': 'Избранное'
+        'title': 'Подписки'
     }
     return render(request, 'posts/follow.html', context)
 
