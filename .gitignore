@@ -150,3 +150,10 @@ static/
 yatube/posts/static/
 yatube/media/
 
+# То что добавил разработчик
+.css
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover 
