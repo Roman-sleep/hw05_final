@@ -26,8 +26,14 @@
   {% endthumbnail %}
   <p>{{ page_obj.text|linebreaksbr }}</p>
   {% if page_obj.author.username == user.username %}
-    <a class="btn btn-primary"
-       href="{% url 'posts:post_edit' page_obj.id %}">редактировать запись</a>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <p>
+      <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">Удалить</button>
+    </p>
+    <p>
+      <a class="btn btn-primary" href="{% url 'posts:post_edit' page_obj.id %}">Pедактировать запись</a>
+    </p>
   {% endif %}
   {% include 'posts/includes/comments_form.html' %}
+  </article>
 {% endblock %}
